@@ -1,62 +1,40 @@
 <!-- index.html -->
-
 {% extends "base.html" %}
-
+<head>
+  <link rel="stylesheet" href="/static/css/calendar.css">
+</head>
 {% block title %}Kalendarz{% endblock %}
-
+<link rel="stylesheet" href="/static/css/calendar.css">
 {% block content %}
-    <div id="calendar-contener">
-       <div id="calendar"></div>
-    </div>
-    <!-- Dołącz bibliotekę jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Dołącz bibliotekę FullCalendar -->
-    <script src=" https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js "></script>
-    <script src=" https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.9/index.global.min.js "></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Inicjalizacja kalendarza
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                 plugins:['multiMonthPlugin'],
-                 defaultView: 'dayGridMonth', // Ustaw widok na standardowy widok miesiąca
-                 headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,3 miesiące' // Dodaj przycisk do przełączania na widok 3 miesięcy
-                },
-                 views: {
-                     dayGridMonth: {
-                         type: 'list',
-                         duration: { months: 2 }, // Wyświetl 3 miesiące naraz
-                        buttonText: '3 miesiące', // Tekst przycisku do przełączania widoku
-                      },
-                     day:{
-                         type:'list',
+  <!-- FullCalendar.js JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.2/dist/fullcalendar.min.js"></script>
+     <!-- Kontener dla kalendarza -->
+  <div id="calendar"></div>
 
-                         buttonText: "Dzień"
-                     }
-                    },
-                locale: 'pl',
-                events: [
-                    // Tutaj możesz dodać wydarzenia do kalendarza
-                    {
-                        title: 'Spotkanie',
-                        start: '2023-10-10T10:00:00',
-                        end: '2023-10-10T12:00:00'
-                    },
-                    {
-                        title: 'Inne wydarzenie',
-                        start: '2023-10-15T14:00:00',
-                        end: '2023-10-15T16:00:00'
-                    }
-                    // Dodaj więcej wydarzeń w podobny sposób
-                ]
-            });
-
-            // Wyrenderuj kalendarz
-            calendar.render();
-        });
-    </script>
+  <!-- Skrypty FullCalendar.js -->
+  <script>
+    // Inicjalizacja FullCalendar.js
+      $(document).ready(function() {
+      $('#calendar').fullCalendar({
+        header: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'month,agendaWeek,agendaDay'
+        },
+        events: [
+           {% for wydarzenie in wydarzenia %}
+            {
+              title: '{{ wydarzenie.title }}',
+              start: '{{ wydarzenie.start }}',
+              {% if wydarzenie.end %}
+                end: '{{ wydarzenie.end }}',
+              {% endif %}
+            },
+          {% endfor %}
+        ]
+      });
+    });
+  </script>
 {% endblock %}

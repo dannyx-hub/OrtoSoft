@@ -1,17 +1,37 @@
 <!-- klienci.html -->
+<head>
+     <!-- Link do jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI/tZ1a9J4/ZB1IZqxUOW4VUc6AuA1z5k+7KLjT4=" crossorigin="anonymous"></script>
+
+  <!-- Link do Bootstrapa CSS -->
+<!--  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
+
+  <!-- Link do Bootstrapa JS -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnC3AV+1fYWNpG9LdTBv2nM2PbDPkpX" crossorigin="anonymous"></script>
+</head>
 
 {% extends "base.html" %}
 
 {% block title %}klienci{% endblock %}
 
 {% block content %}
+
+<!-- Wyświetlanie flash messages -->
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="alert alert-success">
+      {{ messages[0] }}
+    </div>
+  {% endif %}
+{% endwith %}
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnC3AV+1fYWNpG9LdTBv2nM2PbDPkpX" crossorigin="anonymous"></script>
 <br>
 <h3>Klienci:</h3>
 <br>
-<!--<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#exampleModal">Dodaj nowego klienta</button>-->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-  Launch demo modal
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+    Dodaj nowego klienta
 </button>
+
 <br>
 <br>
 <table class="table table-hover">
@@ -31,8 +51,14 @@
                <td>{{x[5]}}</td>
                <td>{{x[6]}}</td>
                <td>{{x[7]}}</td>
-               <td><button type="button" class="btn btn-primary">Edytuj</button>
-                   <button type="button" class="btn btn-dark">Pokaż zamówienia</button></td>
+               <td>
+<!--                   <button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#edit">Edytuj</button>-->
+                   <a href="{{url_for('klienci_route.usun_klienta', id=x[0])}}" style="text-decoration:None;">
+                       <button type="button" class="btn btn-danger">Usuń</button>
+                   </a>
+                   <button type="button" class="btn btn-dark">Pokaż zamówienia</button>
+
+               </td>
             </tr>
         {% endfor %}
     </tbody>
@@ -40,23 +66,100 @@
 
 
 <!--modal-->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
+<div class="modal" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Nowy Klient</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <!-- Include the form -->
+                    <form method="POST" action="{{url_for('klienci_route.lista_klientow', edit=False)}}">
+                        {{ form.hidden_tag() }}
+                        {{ form.imie.label }}
+                        {{ form.imie(class="form-control") }}
+                        {{ form.nazwisko.label }}
+                        {{ form.nazwisko(class="form-control") }}
+                        {{ form.nr_telefonu.label }}
+                        {{ form.nr_telefonu(class="form-control") }}
+                        {{ form.adres.label }}
+                        {{ form.adres(class="form-control") }}
+                        {{ form.kod_pocztowy.label }}
+                        {{ form.kod_pocztowy(class="form-control") }}
+                        {{ form.miasto.label }}
+                        {{ form.miasto(class="form-control") }}
+                        {{ form.mail.label }}
+                        {{ form.mail(class="form-control") }}
+                        <br>
+                        {{ form.submit(class="btn btn-success") }}
+                    </form>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
     </div>
-  </div>
-</div>
+
+
+<!--modal-->
+<div class="modal" id="edit">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Edytuj Klienta</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <!-- Include the form -->
+                    <form method="POST" action="{{url_for('klienci_route.lista_klientow', edit=True)}}">
+                        {{ edit_form.hidden_tag() }}
+                        {{ edit_form.imie.label }}
+                        {{ edit_form.imie(class="form-control") }}
+                        {{ edit_form.nazwisko.label }}
+                        {{ edit_form.nazwisko(class="form-control") }}
+                        {{ edit_form.nr_telefonu.label }}
+                        {{ edit_form.nr_telefonu(class="form-control") }}
+                        {{ edit_form.adres.label }}
+                        {{ edit_form.adres(class="form-control") }}
+                        {{ edit_form.kod_pocztowy.label }}
+                        {{ edit_form.kod_pocztowy(class="form-control") }}
+                        {{ edit_form.miasto.label }}
+                        {{ edit_form.miasto(class="form-control") }}
+                        {{ edit_form.mail.label }}
+                        {{ edit_form.mail(class="form-control") }}
+                        <br>
+                        {{ edit_form.submit(class="btn btn-success") }}
+                    </form>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 {% endblock %}

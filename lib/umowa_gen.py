@@ -8,6 +8,19 @@ import re
 import datetime
 
 
+def create_data_set(client_id):
+    from connection.database import Database
+    db = Database()
+    cnx = db.connect_to_database()
+    query = "select * from klienci where id='{}'".format(client_id)
+    result = db.exec_query(query=query, type="select", cnx=cnx)
+    data = {}
+    print(result)
+    for row in result:
+        data[row[0]] = row[1]
+    return data
+
+
 def find_varialable(doc):
     words_in_braces = set()
     for para in doc.paragraphs:
@@ -17,7 +30,7 @@ def find_varialable(doc):
     result = []
     for x in words_in_braces:
         print(f"x {x}")
-        result.append("{"+x+"}")
+        result.append("{" + x + "}")
     return result
 
 
@@ -26,26 +39,16 @@ def replace_text(doc, old_text, new_txt):
         for run in para.runs:
             run.text = run.text.replace(old_text, new_txt)
 
-# dane z bazy powinny przyjsc w slowniku gdzie {kolumna:wartosc}
-def generate_dict(key_list, value_list):
-    zmienne = {}
-    for x in key_list:
-        zmienne[x] = ""
-    return zmienne
 
-
-
-
-
-
-input_file = "/home/danny/PycharmProjects/ortoSoft/umowa_template.docx"
-text = docx2txt.process(input_file)
-
-doc = Document(input_file)
-result = find_varialable(doc)
-print(result)
-zmienne = generate_dict(result)
-print(zmienne)
+#
+# input_file = "../umowa_template.docx"
+# text = docx2txt.process(input_file)
+#
+# doc = Document(input_file)
+# result = find_varialable(doc)
+# print(result)
+# zmienne = generate_dict(result)
+# print(zmienne)
 
 # TODO lepszy sposob na uzupelnienie zmiennych
 
@@ -59,9 +62,12 @@ print(zmienne)
 # zmienne['{wartosc_urzadzenia}'] = wartosc_urzadzenia
 # zmienne['{data_wydania}'] = data_wydania
 
-for variable, value in zmienne.items():
-    replace_text(doc, variable, value)
 
-output_file = "/home/danny/Pobrane/umowa_2.docx"
-doc.save(output_file)
-print(f"nowy plik docx zostal wygenerowany jako {output_file}")
+# for variable, value in zmienne.items():
+#     replace_text(doc, variable, value)
+#
+# output_file = "../umowa_template.docx"
+# doc.save(output_file)
+# print(f"nowy plik docx zostal wygenerowany jako {output_file}")
+#
+print(create_data_set(16))

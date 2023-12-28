@@ -1,0 +1,94 @@
+/* Global styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Header styles */
+.header {
+  background-color: #333;
+  color: white;
+  padding: 15px;
+  text-align: center;
+}
+
+/* Container styles */
+.container {
+  width: 80%;
+  margin: 0 auto;
+}
+
+/* Main content styles */
+.main-content {
+  float: left;
+  width: 70%;
+}
+
+/* Sidebar styles */
+.sidebar {
+  float: left;
+  width: 30%;
+}
+
+/* Footer styles */
+.footer {
+  clear: both;
+  background-color: #333;
+  color: white;
+  padding: 15px;
+  text-align: center;
+}
+
+/* Table styles */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.table th, .table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+/* Modal styles */
+.modal-dialog {
+  max-width: 80%;
+}
+
+/* Media queries for mobile devices */
+@media only screen and (max-width: 600px) {
+  .main-content, .sidebar {
+    width: 100%;
+    float: none;
+  }
+  
+  .table th, .table td {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .table th, .table td {
+    text-align: center;
+  }
+  
+  .modal-dialog {
+    max-width: 100%;
+  }
+}
+html, body {
+  height: 100%;
+}
+
+#content-wrapper {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1; /* Zapewnia, że treść zajmie dostępne miejsce, a stopka będzie zawsze na dole */
+}

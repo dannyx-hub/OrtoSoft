@@ -1,52 +1,59 @@
 from mysql.connector import connection
 from mysql.connector import errorcode
 from mysql.connector import Error
+from lib.config import db_config
 import mysql.connector
 from lib.config import db_config
 
 
 class Database:
     def __init__(self):
+
         self.cnx = None
         self.cursor = None
         self.error = Error
         self.error_code = errorcode
-        # self.config = db_config()
+        self.config = db_config()
 
     def connect_to_database(self):
         try:
             self.cnx = connection.MySQLConnection(
-                user="ortoszyna",
-                password="ortoszyna",
-                host="127.0.0.1",
-                database="ortosoft"
+                user=self.config['user'],
+                password=self.config['password'],
+                host=self.config['host'],
+                database=self.config['database']
             )
             if self.cnx:
                 self.cursor = self.cnx.cursor()
                 print("polaczylem sie z baza")
-                return True
+                return self.cnx
         except Exception as e:
             print(e)
 
-    def exec_query(self, query, type):
+    def exec_query(self, query, type, cnx):
+        cursor = cnx.cursor(buffered=True)
         if type == "select":
             try:
-                self.cursor.execute(query)
-                return self.cursor.fetchall()
+                cursor.execute(query)
+                return cursor
             except Exception as e:
                 print(e)
                 return None
+            # finally:
+            #     cursor.close()
+            #     cnx.close()
+
         else:
             try:
-                self.cursor.execute(query)
-                self.cnx.commit()
+                cursor.execute(query)
+                cnx.commit()
                 return True
             except Exception as e:
                 print(e)
                 return False
             finally:
-                self.cursor.close()
-                self.cnx.close()
+                cursor.close()
+                cnx.close()
 
 
 
@@ -55,5 +62,5 @@ class Database:
 # # TEST
 # db = Database()
 # db.connect_to_database()
-# # print(db.exec_query("select * from klienci limit 1;", "select"))
+# print(db.exec_query("select * from klienci limit 1;", "select"))
 # print(db.exec_query("update klienci set imie='Damian' where id=1;","update"))
